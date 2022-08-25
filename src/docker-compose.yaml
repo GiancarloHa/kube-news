@@ -1,0 +1,30 @@
+version: '3.3'
+
+networks:
+  kube_net:
+    driver: bridge
+
+services:
+  postgre:
+    image: postgres:12.12
+    networks:
+      - kube_net
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: kubenews
+      POSTGRES_PASSWORD: kubenews
+      POSTGRES_DB: postgre
+  kubenews:
+    image: giancarloh/kube-news:v1
+    depends_on:
+      - postgre
+    networks:
+      - kube_net
+    ports:
+      - 8080:8080
+    environment:
+     DB_DATABASE: postgre
+     DB_USERNAME: kubenews
+     DB_PASSWORD: kubenews
+     DB_HOST: postgre
